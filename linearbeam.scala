@@ -1,6 +1,6 @@
 /*
- * NAME : ZHEN YI
- * ID : S1563190
+ * AUTHOR: Z.Y.
+ * 
  * Version 1.0
  */
 
