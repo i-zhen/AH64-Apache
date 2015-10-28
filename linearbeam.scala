@@ -1,7 +1,8 @@
 /*
  * AUTHOR: Z.Y.
  * 
- * Version 1.0
+ * Synchronization Rate : 5%
+ * 
  */
 
 import scala.collection.immutable.Set
@@ -73,7 +74,7 @@ object CW1 {
   // ======================================================================
 
   // ======================================================================
-  // Exercise 1: Capture-avoiding substitution
+  // 1.1: Capture-avoiding substitution
   // ======================================================================
 
   // This object provides a method to generate a "fresh" variable name
@@ -153,7 +154,7 @@ object CW1 {
 
 
   // ======================================================================
-  // Exercise 2: Desugaring let fun, let rec and let pair
+  // 1.2: Desugaring let fun, let rec and let pair
   // ======================================================================
 
   def desugar(e: Expr): Expr = e match {
@@ -205,7 +206,7 @@ object CW1 {
   // ======================================================================
 
   // ======================================================================
-  // Exercise 3: Primitive operations
+  // 2.1: Primitive operations
   // ======================================================================
 
   
@@ -259,7 +260,7 @@ object CW1 {
   }
   
   // ======================================================================
-  // Exercise 4: Evaluation
+  // 2.2: Evaluation
   // ======================================================================
 
   def eval (env: Env[Value], e: Expr): Value =e match {
@@ -345,7 +346,7 @@ object CW1 {
   // ======================================================================
 
   // ======================================================================
-  // Exercise 5: Typechecker
+  // 3.1: Typechecker
   // ======================================================================
 
   // typing: calculate the return type of e, or throw an error
