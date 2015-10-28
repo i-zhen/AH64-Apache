@@ -1,8 +1,7 @@
 /*
  * AUTHOR: Z.Y.
- * 
+ *
  * Synchronization Rate : 5%
- * 
  */
 
 import scala.collection.immutable.Set
@@ -645,7 +644,7 @@ object CW1 {
     }
 
     def start(): Unit = {
-      println("Welcome to LinearBeam! (V1.0, October 27, 2015)");
+      println("Welcome to LinearBeam! (5%, October 28, 2015)");
       println("Enter expressions to evaluate, :load <filename.lb> to load a file, or :quit to quit.");
       println("This REPL can only read one line at a time, use :load to load larger expressions.");
       repl()
