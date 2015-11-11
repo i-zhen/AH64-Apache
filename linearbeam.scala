@@ -25,7 +25,7 @@ object CW1 {
   case class Bool(n: Boolean) extends Expr
   case class Eq(e1: Expr, e2:Expr) extends Expr
   case class IfThenElse(e: Expr, e1: Expr, e2: Expr) extends Expr
-  
+
    // Strings
   case class Str(s: String) extends Expr
   case class Length(e: Expr) extends Expr
@@ -96,7 +96,7 @@ object CW1 {
 
       case Bool(n) => Bool(n)
       case Eq(t1,t2) => Eq(subst(t1,e2,x),subst(t2,e2,x))
-      case IfThenElse(t0,t1,t2) => 
+      case IfThenElse(t0,t1,t2) =>
         IfThenElse(subst(t0,e2,x),subst(t1,e2,x),subst(t2,e2,x))
 
       case Str(s) => Str(s)
@@ -104,7 +104,7 @@ object CW1 {
       case Index(t1,t2) => Index(subst(t1,e2,x),subst(t2,e2,x))
       case Concat(t1,t2) => Concat(subst(t1,e2,x),subst(t2,e2,x))
 
-      case Var(y) => 
+      case Var(y) =>
         if (x == y) {
           e2
         } else {
@@ -126,9 +126,9 @@ object CW1 {
 
       case Second(t2) => Second(subst(t2,e2,x))
 
-      case Lambda(y, ty, t0) => 
+      case Lambda(y, ty, t0) =>
         if (x == y) {
-          Lambda(y, ty, subst(t0,e2,x))
+          Lambda(y, ty, t0)
         } else {
           val z = Gensym.gensym(y);
           val fresh_t0 = subst(t0,Var(z),y);
@@ -136,7 +136,7 @@ object CW1 {
         }
 
       case Apply(t1, t2) => Apply(subst(t1,e2,x),subst(t2,e2,x))
-      
+
       case Rec(f, y, tyx, ty, t0) => {
         if(x == y) Rec(f, y, tyx, ty, t0)
         else if(x == f) Rec(f, y, tyx, ty, t0)
@@ -208,7 +208,7 @@ object CW1 {
   // 2.1: Primitive operations
   // ======================================================================
 
-  
+
   object Value {
     // utility methods for operating on values
     def add(v1: Value, v2: Value): Value = (v1,v2) match {
@@ -230,7 +230,7 @@ object CW1 {
       case (NumV(v1),NumV(v2)) => BoolV(v1 == v2)
       case (StringV(v1),StringV(v2)) => BoolV(v1 == v2)
       case (BoolV(v1),BoolV(v2)) => BoolV(v1 == v2)
-      case _ => 
+      case _ =>
         sys.error("arguments to check equal are non-numeric")
     }
 
@@ -243,21 +243,21 @@ object CW1 {
     //Need check
     def index(v1: Value, v2: Value): Value = (v1, v2) match {
       case (StringV(v1),NumV(v2)) => {
-        if (v2 >= v1.length() || v2 < 0) 
+        if (v2 >= v1.length() || v2 < 0)
           sys.error("Out of range")
-        else 
+        else
           StringV(v1(v2).toString())
       }
       case _ => sys.error("Cannot be indexed")
     }
-    
+
 
     def concat(v1: Value, v2: Value): Value = (v1,v2) match {
       case (StringV(v1),StringV(v2)) => StringV(v1 + v2)
       case _ => sys.error("Cannot be concated")
     }
   }
-  
+
   // ======================================================================
   // 2.2: Evaluation
   // ======================================================================
@@ -265,13 +265,13 @@ object CW1 {
   def eval (env: Env[Value], e: Expr): Value =e match {
     // Arithmetic
     case Num(n) => NumV(n)
-    case Plus(e1,e2) => 
+    case Plus(e1,e2) =>
       Value.add(eval(env,e1),eval(env,e2))
-    case Minus(e1,e2) => 
+    case Minus(e1,e2) =>
       Value.subtract(eval(env,e1),eval(env,e2))
     case Times(e1,e2) =>
       Value.multiply(eval(env,e1),eval(env,e2))
-      
+
     case Bool(n) => BoolV(n)
 
     case Str(str) => StringV(str)
@@ -279,10 +279,10 @@ object CW1 {
     case Eq(e1,e2) =>
       Value.eq(eval(env,e1),eval(env,e2))
 
-    case Length(e1) => 
+    case Length(e1) =>
       Value.length(eval(env,e1))
 
-    case Index(e1, e2) => 
+    case Index(e1, e2) =>
       Value.index(eval(env,e1),eval(env,e2))
 
     case Concat(e1,e2) =>
@@ -292,7 +292,7 @@ object CW1 {
     //very important!
     /*
     case IfThenElse(e,e1,e2) => eval(env, e) match {
-      case BoolV(n) => 
+      case BoolV(n) =>
         if (n) eval(env, e1) else eval(env, e2)
       case _ => sys.error("Not an legal boolean value")
     }
@@ -312,7 +312,7 @@ object CW1 {
 
       case _ => eval(env + (x -> eval(env, e1)), e2)
     }
-     
+
 
     case Pair(e1,e2) => PairV(eval(env,e1),eval(env,e2))
 
@@ -320,7 +320,7 @@ object CW1 {
       case PairV(e1, e2) => e1
       case _ => sys.error("Eval: First: Cannot match such pattern")
     }
-    
+
     case Second(e) => eval(env, e) match {
       case PairV(e1, e2) => e2
       case _ => sys.error("Eval: Second :Cannot match such pattern")
@@ -354,32 +354,32 @@ object CW1 {
     case Num(n) => IntTy
     case Plus(e1,e2) => (tyOf(ctx,e1),tyOf(ctx,e2)) match {
       case (IntTy, IntTy) => IntTy
-      case _ => sys.error("Plus: non-integer arguments to add") 
+      case _ => sys.error("Plus: non-integer arguments to add")
     }
 
     case Minus(e1,e2) => (tyOf(ctx,e1),tyOf(ctx,e2)) match {
       case (IntTy, IntTy) => IntTy
-      case _ => sys.error("Minus: non-integer arguments to minus") 
+      case _ => sys.error("Minus: non-integer arguments to minus")
     }
     case Times(e1,e2) => (tyOf(ctx,e1),tyOf(ctx,e2)) match {
       case (IntTy, IntTy) => IntTy
-      case _ => sys.error("Times: non-integer arguments to times") 
+      case _ => sys.error("Times: non-integer arguments to times")
     }
 
     //Booleans
     case Bool(n) => BoolTy
 
     case IfThenElse(e,e1,e2) => (tyOf(ctx,e),tyOf(ctx,e1),tyOf(ctx,e2)) match{
-      case (BoolTy, t1, t2) => 
-        if (t1 == t2) t1 else sys.error("Types of branches must be equal") 
-      case _ => sys.error("IfThenElse: Type in the first expression mush be boolean") 
+      case (BoolTy, t1, t2) =>
+        if (t1 == t2) t1 else sys.error("Types of branches must be equal")
+      case _ => sys.error("IfThenElse: Type in the first expression mush be boolean")
     }
 
     case Eq(e1,e2) => (tyOf(ctx,e1),tyOf(ctx,e2)) match {
       case (IntTy, IntTy) => BoolTy
       case (StringTy, StringTy) => BoolTy
       case (BoolTy, BoolTy) => BoolTy
-      case _ => sys.error("Eq: Types in the Eq must be Int, String or Bool") 
+      case _ => sys.error("Eq: Types in the Eq must be Int, String or Bool")
     }
 
     //Strings
@@ -388,22 +388,22 @@ object CW1 {
 
     case Length(e) => tyOf(ctx,e) match {
       case StringTy => IntTy
-      case _ => sys.error("Length: cannot find string here") 
+      case _ => sys.error("Length: cannot find string here")
     }
 
     case Index(e1, e2) => (tyOf(ctx, e1),tyOf(ctx, e2)) match {
-      case (StringTy, IntTy) => StringTy 
-      case _ => sys.error("Index : cannot find string or int") 
+      case (StringTy, IntTy) => StringTy
+      case _ => sys.error("Index : cannot find string or int")
     }
-     
+
     case Concat(e1, e2) => (tyOf(ctx, e1),tyOf(ctx, e2)) match {
-      case (StringTy, StringTy) => StringTy 
-      case _ => sys.error("Concat : must be two strings") 
+      case (StringTy, StringTy) => StringTy
+      case _ => sys.error("Concat : must be two strings")
     }
 
     // Variables and let-binding
     case Var(x) => ctx(x)
-  
+
     case Let(x,e1,e2) => tyOf(ctx + (x -> (tyOf(ctx,e1))), e2)
     case LetPair(x, y, e1, e2) =>  {
       val e1f = x -> tyOf(ctx, First(e1))
@@ -416,21 +416,21 @@ object CW1 {
       tyOf(ctx2 + (f -> FunTy(ty, tyOf(ctx2, e1))), e2)
     }
 
-    case LetRec(f, arg, xty, ty, e1, e2) => 
+    case LetRec(f, arg, xty, ty, e1, e2) =>
       tyOf(ctx + (f -> FunTy(xty, ty)) + (arg -> xty), e2)
-  
+
 
     //Pairing
 
     case Pair(e1,e2) => (tyOf(ctx,e1),tyOf(ctx,e2)) match {
-      case (type1, type2) => PairTy(type1, type2) 
-      case _ => sys.error("Pair: type error") 
+      case (type1, type2) => PairTy(type1, type2)
+      case _ => sys.error("Pair: type error")
     }
 
     case First(e) => tyOf(ctx,e) match {
       case PairTy(t1, t2) => t1
     }
-    
+
     case Second(e) => tyOf(ctx,e) match {
       case PairTy(t1, t2) => t2
     }
@@ -440,14 +440,14 @@ object CW1 {
     case Lambda(x, ty, e) => FunTy(ty, tyOf(ctx + (x -> ty), e))
 
     case Apply(e1,e2) => tyOf(ctx, e1) match {
-      case FunTy(t1, t2) => 
+      case FunTy(t1, t2) =>
         if (t1 == tyOf(ctx, e2))
-          t2 
-        else 
+          t2
+        else
           sys.error("Apply: type doesn't match")
       case _ => sys.error("Apply: not a function")
     }
-    
+
     case Rec(f, x, tyx, ty, e) => FunTy(tyx, tyOf(ctx + (f -> ty) + (x -> tyx),e))
 
     case _ => sys.error("Amazing Error : No such type")
@@ -527,7 +527,7 @@ object CW1 {
         }
 
     lazy val typ: P[Type] =
-      funTyp 
+      funTyp
 
     lazy val funTyp: P[Type] =
       pairTyp ~ "->" ~ funTyp ^^ {
@@ -543,7 +543,7 @@ object CW1 {
       "bool" ^^^ BoolTy | "int" ^^^ IntTy | "str" ^^^ StringTy |  "("~>typ<~")"
 
     lazy val operations: P[Expr] =
-      application | 
+      application |
       ("fst" ~ "(") ~> expression <~ ")" ^^ (x => First(x)) |
         ("snd" ~ "(") ~> expression <~ ")" ^^ (x => Second(x)) |
         ("length" ~ "(") ~> expression <~ ")" ^^ (x => Length(x)) |
@@ -611,7 +611,7 @@ object CW1 {
 
   val parser = new CWParser
 
-  
+
   object Main {
     def typecheck(ast: Expr):Type =
       tyOf(Map.empty,ast);
@@ -640,7 +640,7 @@ object CW1 {
       println("Evaluating...");
       println("Result: " + evaluate(core_ast))
 
-     
+
     }
 
     def start(): Unit = {
@@ -691,6 +691,3 @@ object CW1 {
     }
   }
 }
-
-
-
