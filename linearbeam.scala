@@ -195,7 +195,7 @@ object CW1 {
     case Apply(e1, e2) => Apply(desugar(e1), desugar(e2))
     case Rec(f, x, tyx, ty, e) => Rec(f,x,tyx,ty,desugar(e))
 
-    case _ => sys.error("Error: Desugar: Imposiible Expression")
+    case _ => sys.error("Error: Desugar: Imposible Expression")
 
   }
 
@@ -332,8 +332,10 @@ object CW1 {
     case Rec(f, x, tyx, ty, e) => RecV(env, f, x, e)
 
     case Apply(e1, e2) => eval(env, e1) match {
-      case ClosureV(envc, x, e) => eval(envc + (x -> eval(env, e2)), e)
-      case RecV(envr, f, x, e)  => eval(envr + (x -> eval(env,e2)) + (f -> env(f)), e)
+      case ClosureV(envc, x, e) => 
+        eval(envc + (x -> eval(env, e2)), e)
+      case RecV(envr, f, x, e)  => 
+        eval(envr + (x -> eval(env,e2)) + (f -> RecV(envr, f, x, e)), e)
     }
 
     case _ => sys.error("Eval: Cannot match such pattern")
@@ -448,7 +450,12 @@ object CW1 {
       case _ => sys.error("Apply: not a function")
     }
 
-    case Rec(f, x, tyx, ty, e) => FunTy(tyx, tyOf(ctx + (f -> ty) + (x -> tyx),e))
+    case Rec(f, x, tyx, ty, e) => {
+      if (ty == tyOf(ctx + (f -> FunTy(tyx, ty)) + (x -> tyx),e))
+        FunTy(tyx, ty)
+      else 
+        sys.error("Wrong return type")
+    }
 
     case _ => sys.error("Amazing Error : No such type")
   }
