@@ -407,20 +407,24 @@ object CW1 {
     case Var(x) => ctx(x)
 
     case Let(x,e1,e2) => tyOf(ctx + (x -> (tyOf(ctx,e1))), e2)
-    case LetPair(x, y, e1, e2) =>  {
-      val e1f = x -> tyOf(ctx, First(e1))
-      val e1s = y -> tyOf(ctx, Second(e1))
-      tyOf(ctx + e1f + e1s, e2)
+
+    case LetPair(x, y, e1, e2) =>  tyOf(ctx, e1) match{ 
+      case PairTy(t1, t2) => tyOf(ctx + (x -> t1) + (y -> t2), e2)
+      case _ => sys.error("Let pair's first argument must be a pair")
     }
 
     case LetFun(f, arg, ty, e1, e2) => {
-      val ctx2 = ctx + (arg -> ty)
-      tyOf(ctx2 + (f -> FunTy(ty, tyOf(ctx2, e1))), e2)
+      val ty2 = tyOf(ctx + (arg -> ty), e1)
+      tyOf(ctx + (f -> FunTy(ty, ty2)), e2)
     }
 
-    case LetRec(f, arg, xty, ty, e1, e2) =>
-      tyOf(ctx + (f -> FunTy(xty, ty)) + (arg -> xty), e2)
-
+    case LetRec(f, arg, xty, ty, e1, e2) => { 
+      val te1 = tyOf(ctx + (f -> FunTy(xty, ty)) + (arg -> xty), e1)
+      if (te1 == ty) 
+        tyOf(ctx + (f -> FunTy(xty, ty)), e2)
+      else
+        sys.error("Wrong return type!")
+    }
 
     //Pairing
 
