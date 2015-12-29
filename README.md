@@ -1,5 +1,3 @@
-### LinearBeam
-
 Under constructing...
 
 A simple interpreter.
